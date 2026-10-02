@@ -29,7 +29,7 @@ Observação: no evento de push, o Gitleaks analisa só os commits novos. Por is
 
 ## Conclusão: adaptando para a minha rotina (dados e Power BI em um banco)
 
-Trabalho em um banco, na área de dados com Power BI. Nesse contexto, o maior risco não está em aplicações web, e sim em **credenciais e dados sensíveis espalhados pelos artefatos de dados**: strings de conexão com senha em scripts Python/SQL e em parâmetros do Power Query, tokens de Databricks e chaves de Azure Storage em notebooks, segredos de service principal em arquivos de configuração e até CSVs de amostra com CPF e número de conta. Num banco, um vazamento desses é incidente de segurança e também de **LGPD** e de conformidade com a **Resolução CMN 4.893** (política de segurança cibernética).
+Trabalho em um banco, na área de dados com Power BI. Nesse contexto, o maior risco não está em aplicações web, e sim em **credenciais e dados sensíveis espalhados pelos artefatos de dados**: strings de conexão com senha em scripts Python/SQL e em parâmetros do Power Query, arquivos JSON de chave de service account do Google Cloud (usados para acessar o BigQuery) e chaves de Azure Storage em notebooks, segredos de service principal em arquivos de configuração e até CSVs de amostra com CPF e número de conta. Num banco, um vazamento desses é incidente de segurança e também de **LGPD** e de conformidade com a **Resolução CMN 4.893** (política de segurança cibernética).
 
 **Pré-requisito: versionar tudo no Git.** O `.pbix` é binário e nenhuma das duas ferramentas consegue analisá-lo. Por isso, a adaptação começa salvando os relatórios no formato **PBIP (Power BI Project)**, que grava o modelo semântico (TMDL) e as consultas Power Query em arquivos de texto, junto com os scripts de ETL e os notebooks, no mesmo repositório.
 
@@ -41,7 +41,7 @@ Trabalho em um banco, na área de dados com Power BI. Nesse contexto, o maior ri
 - **Processo:** credenciais ficam no **Azure Key Vault** e no gateway/Power BI Service, nunca no arquivo. Se algo vazar, a resposta é revogar e rotacionar a credencial, não só apagar o arquivo.
 
 **Semgrep (SAST)**
-- Analisa os **scripts Python de ETL**: SQL montado com f-string ou concatenação (risco de SQL Injection, a correção é usar query parametrizada), `requests` com `verify=False`, uso de `eval`/`pickle` e credenciais fixas no código.
+- Analisa os **scripts Python de ETL**: SQL montado com f-string ou concatenação e enviado ao BigQuery (risco de SQL Injection, a correção é usar os query parameters do BigQuery), `requests` com `verify=False`, uso de `eval`/`pickle` e credenciais fixas no código.
 - **Regras customizadas** em YAML para padrões internos, por exemplo bloquear strings de conexão com `Encrypt=False`.
 - **Adoção gradual:** começar só reportando e passar a bloquear depois de calibrar os falsos positivos. No próprio lab ele apontou as tags mutáveis das actions, um achado válido, mas que precisa de triagem para não virar ruído.
 
