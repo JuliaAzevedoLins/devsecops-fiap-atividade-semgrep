@@ -1,8 +1,8 @@
 # devsecops-fiap-atividade-semgrep
 
-**Aluna:** JULIA AZEVEDO LINS
-**RM:** 98690
-**Turma:** 4ESPY
+- **Aluna:** JULIA AZEVEDO LINS
+- **RM:** 98690
+- **Turma:** 4ESPY
 
 Laboratório da Aula 17 de DevSecOps (FIAP): *Shift Left na prática – Semgrep, Gitleaks e o pipeline que barra vulnerabilidade*.
 
